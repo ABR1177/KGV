@@ -1,0 +1,255 @@
+:root {
+    --bg-dark: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.6);
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --accent-primary: #818cf8;
+    /* indigo-400 */
+    --accent-secondary: #2dd4bf;
+    /* teal-400 */
+    --accent-danger: #f43f5e;
+    /* rose-500 */
+}
+
+body {
+    background-color: var(--bg-dark);
+    background-image:
+        radial-gradient(at 0% 0%, rgba(129, 140, 248, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(45, 212, 191, 0.1) 0px, transparent 50%);
+    color: #f1f5f9;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-attachment: fixed;
+}
+
+/* Glassmorphism Classes */
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid var(--border-glass);
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+.glass-nav {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border-glass);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Custom Gradients */
+.text-gradient {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Navigation Active State */
+.nav-btn {
+    color: #64748b;
+    /* slate-500 */
+    transition: color 0.3s ease;
+}
+
+.nav-btn .icon-container {
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-btn:active .icon-container {
+    transform: scale(0.9);
+}
+
+.nav-btn.active {
+    color: var(--accent-primary);
+}
+
+.nav-btn.active .icon-container {
+    background: rgba(129, 140, 248, 0.15);
+    box-shadow: 0 0 20px rgba(129, 140, 248, 0.2);
+}
+
+.nav-btn.active span {
+    font-weight: 800;
+}
+
+/* Map Layout */
+.garden-map-container {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-primary) transparent;
+}
+
+.map-grid {
+    padding: 10px;
+    margin: 0 auto;
+}
+
+.way-cell {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    width: 45px;
+    height: 45px;
+}
+
+.way-cell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-image:
+        radial-gradient(circle at 2px 2px, white 1px, transparent 0);
+    background-size: 8px 8px;
+}
+
+.garden-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+/* Modal specific tweaks */
+select option {
+    background: var(--bg-dark);
+    color: white;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .label,
+    .label * {
+        visibility: visible;
+    }
+
+    .label {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border: 2px solid #000;
+        padding: 40px;
+        text-align: center;
+        width: 400px;
+    }
+}
+
+.city-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.garden-cell.text-red-400 {
+    color: #f87171 !important;
+    /* red-400 */
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    background-image: radial-gradient(circle at center, rgba(239, 68, 68, 0.1) 0%, transparent 70%);
+}
+
+/* Highlight Animation for Open Lease */
+@keyframes highlightPulsate {
+    0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+        border-color: rgba(245, 158, 11, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 15px 5px rgba(245, 158, 11, 0.2);
+        border-color: rgba(245, 158, 11, 1);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+        border-color: rgba(245, 158, 11, 0.5);
+    }
+}
+
+.highlight-garden-alert {
+    animation: highlightPulsate 2s infinite !important;
+    z-index: 10 !important;
+    position: relative !important;
+    background: rgba(245, 158, 11, 0.15) !important;
+    border-color: #f59e0b !important;
+    border-width: 2px !important;
+}
+
+/* Inventory Status Badges */
+.badge {
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-available {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-rented {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.badge-maintenance {
+    background: rgba(244, 63, 94, 0.1);
+    color: #f43f5e;
+    border: 1px solid rgba(244, 63, 94, 0.2);
+}

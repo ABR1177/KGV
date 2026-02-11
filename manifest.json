@@ -1,0 +1,16 @@
+{
+    "name": "KGV Am Lohmühlenbach e.V.",
+    "short_name": "Am Lohmühlenbach",
+    "description": "Mitglieder- und Gartenverwaltung",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#0f172a",
+    "icons": [
+        {
+            "src": "https://cdn-icons-png.flaticon.com/512/1532/1532671.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
