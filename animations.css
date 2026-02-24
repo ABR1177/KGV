@@ -1,0 +1,91 @@
+/* Confetti Animation */
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.confetti-piece {
+    animation: confetti-fall 3s linear forwards;
+}
+
+/* Birthday Cake Animation */
+@keyframes cake-bounce {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-10px) scale(1.05);
+    }
+}
+
+.birthday-cake {
+    animation: cake-bounce 2s ease-in-out infinite;
+}
+
+/* Pulse Animation for Today's Birthday */
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(129, 140, 248, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 40px rgba(129, 140, 248, 0.8);
+    }
+}
+
+.birthday-today {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Theme Toggle Animation */
+@keyframes rotate-icon {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.theme-toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-icon.rotating {
+    animation: rotate-icon 0.5s ease-in-out;
+}
+
+/* Smooth Color Transitions */
+* {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+}
+
+/* Exclude specific elements from transition */
+.no-transition,
+.no-transition * {
+    transition: none !important;
+}

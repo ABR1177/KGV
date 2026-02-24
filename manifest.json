@@ -1,16 +1,12 @@
 {
-    "name": "KGV Am Lohmühlenbach e.V.",
-    "short_name": "Am Lohmühlenbach",
-    "description": "Mitglieder- und Gartenverwaltung",
-    "start_url": "index.html",
-    "display": "standalone",
-    "background_color": "#0f172a",
-    "theme_color": "#0f172a",
-    "icons": [
-        {
-            "src": "https://cdn-icons-png.flaticon.com/512/1532/1532671.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "name": "Geburtstagsmanager",
+  "short_name": "Birthdays",
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#4F46E5",
+  "background_color": "#0f172a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
 }
