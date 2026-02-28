@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kgv-manager-v2';
+const CACHE_NAME = 'kgv-manager-v5';
 const ASSETS = [
     './',
     './index.html',

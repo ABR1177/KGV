@@ -550,6 +550,7 @@ function openGardenModal(gardenId) {
     document.getElementById('garden-outbuildingSize').value = garden.outbuildingSize;
 
     document.getElementById('garden-hasPool').checked = garden.hasPool;
+    document.getElementById('garden-hasSolar').checked = garden.hasSolar;
 
     // Populate Meter Fields & Lease Status
     document.getElementById('garden-meter-water').value = garden.meters?.water || 0;
@@ -669,6 +670,153 @@ function printGardenLabel() {
     printWin.document.close();
 }
 
+function printInspectionProtocol() {
+    const gardenId = document.getElementById('modal-garden-id').value;
+    const garden = state.gardens.find(g => g.id === gardenId);
+
+    if (!garden) {
+        showToast('Garten nicht gefunden', 'error');
+        return;
+    }
+
+    const owner = garden.ownerId ? state.members.find(m => m.id === garden.ownerId) : null;
+    const ownerName = owner ? `${owner.firstName || ''} ${owner.lastName || owner.name || ''}`.trim() : 'Kein Pächter eingetragen';
+
+    const printWin = window.open('', '_blank');
+    printWin.document.write(`
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <title>Begehungsprotokoll - Garten ${garden.number}</title>
+                <style>
+                    * { box-sizing: border-box; }
+                    body { font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.5; padding: 20px 40px; font-size: 14pt; max-width: 800px; margin: 0 auto; }
+                    h1 { font-size: 20pt; font-weight: bold; color: #437a45; text-align: center; margin-bottom: 20px; font-family: Arial, sans-serif; }
+                    h2 { font-size: 14pt; font-weight: bold; text-align: center; text-decoration: underline; margin-bottom: 30px; font-family: Arial, sans-serif; }
+                    p { margin-bottom: 20px; font-family: Arial, sans-serif; font-size: 12pt; }
+                    .row { display: flex; justify-content: space-between; margin-bottom: 20px; }
+                    .col-2 { width: 48%; }
+                    .dotted-line { border-bottom: 2px dotted #000; flex-grow: 1; margin-left: 10px; display: inline-block; min-width: 50px; font-family: monospace; font-size: 14pt; text-align: center; }
+                    .flex-row { display: flex; align-items: flex-end; margin-bottom: 15px; }
+                    .label { white-space: nowrap; font-family: Arial, sans-serif; font-size: 12pt; }
+                    
+                    .indented { margin-left: 40px; }
+                    .checkbox-group { display: flex; gap: 80px; margin: 30px 0; }
+                    .checkbox-wrapper { display: flex; align-items: center; gap: 10px; }
+                    .checkbox { width: 22px; height: 22px; border: 2px solid #000; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; font-family: Arial, sans-serif; }
+                    
+                    .textarea-lines { margin-top: 10px; }
+                    .line { border-bottom: 2px dotted #000; height: 30px; width: 100%; margin-bottom: 10px; }
+                    
+                    .signatures { display: grid; grid-template-columns: auto auto; justify-content: space-between; gap: 40px; margin-top: 50px; }
+                    .sig-block { margin-bottom: 20px; width: 250px; }
+                    .sig-line { border-bottom: 2px dotted #000; height: 30px; margin-bottom: 5px; }
+                    .sig-label { text-align: left; font-size: 11pt; font-family: Arial, sans-serif; }
+                    @media print {
+                        body { padding: 0; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                        @page { margin: 2cm; }
+                    }
+                </style>
+            </head>
+            <body onload="window.print(); setTimeout(function(){ window.close(); }, 500);">
+                <h1>Gartenanlage „Am Lohmühlenbach“ e.V.</h1>
+                <h2>Protokoll über Gartenbegehung</h2>
+                
+                <p>Laut Beschluß des Vorstandes wird eine Begehung aller Parzellen durch Vorstandsmitglieder vorgenommen.</p>
+                
+                <div class="flex-row">
+                    <span class="label">Parzelle Nr.:</span>
+                    <span class="dotted-line" style="text-align: left; padding-left: 10px; font-weight: bold; max-width: 200px;">${garden.number}</span>
+                </div>
+                
+                <div class="row" style="margin-bottom: 15px;">
+                    <div class="flex-row col-2">
+                        <span class="label">Tag der Begehung:</span>
+                        <span class="dotted-line"></span>
+                    </div>
+                    <div class="flex-row col-2">
+                        <span class="label">Uhrzeit:</span>
+                        <span class="dotted-line"></span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <span class="label">Anwesenheit Vorstandsmitglieder:</span>
+                    <div class="indented">
+                        <div class="flex-row" style="margin-top:10px;">
+                            <span class="label">1.</span>
+                            <span class="dotted-line" style="max-width:350px; text-align:left; padding-left:10px;">${garden.inspections && garden.inspections.length > 0 ? garden.inspections[garden.inspections.length - 1].person1 || '' : ''}</span>
+                        </div>
+                        <div class="flex-row">
+                            <span class="label">2.</span>
+                            <span class="dotted-line" style="max-width:350px; text-align:left; padding-left:10px;">${garden.inspections && garden.inspections.length > 0 ? garden.inspections[garden.inspections.length - 1].person2 || '' : ''}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-row" style="margin-bottom: 25px;">
+                    <span class="label">Parzellennutzer:</span>
+                    <span class="dotted-line" style="text-align: left; padding-left: 10px; font-weight: bold;">${ownerName}</span>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <span class="label">Ergebnis: Gesamtzustand (gut, befriedigend, mangelhaft)</span>
+                    <div class="line" style="margin-top: 10px;"></div>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <span class="label">Mängel:</span>
+                    <div class="textarea-lines">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <span class="label">Auflagen:</span>
+                    <div class="textarea-lines">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
+                </div>
+                
+                <div class="flex-row" style="margin-bottom: 20px;">
+                    <span class="label">Termin zur Beseitigung der Mängel:</span>
+                    <span class="dotted-line" style="max-width:250px;"></span>
+                </div>
+                
+                <div class="checkbox-group" style="margin-bottom: 60px;">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox">${garden.hasPool ? '✕' : ''}</div>
+                        <span class="label">Pool</span>
+                    </div>
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox">${garden.hasSolar ? '✕' : ''}</div>
+                        <span class="label">Photovoltaik</span>
+                    </div>
+                </div>
+                
+                <div class="signatures">
+                    <div class="sig-block">
+                        <div class="sig-line"></div>
+                        <div class="sig-label">Vorstandsmitglied</div>
+                    </div>
+                    <div class="sig-block">
+                        <div class="sig-line"></div>
+                        <div class="sig-label">Parzellennutzer</div>
+                    </div>
+                    <div class="sig-block" style="grid-column: 1 / -1; margin-top: -20px;">
+                        <div class="sig-line" style="width: 250px;"></div>
+                        <div class="sig-label">Vorstandsmitglied</div>
+                    </div>
+                </div>
+            </body>
+        </html>
+    `);
+    printWin.document.close();
+}
+
 
 function closeGardenModal() {
     const modal = document.getElementById('modal-garden-detail');
@@ -680,19 +828,36 @@ function renderInspections(inspections) {
     if (!container) return;
     container.innerHTML = '';
 
+    // Lade alle Vorstandsmitglieder
+    const boardMembers = state.members.filter(m => m.isBoardMember).sort((a, b) => (a.lastName || '').localeCompare(b.lastName || ''));
+
     inspections.forEach((insp, index) => {
+        let optionsHtml1 = '<option value="">1. Prüfer wählen...</option>';
+        let optionsHtml2 = '<option value="">2. Prüfer wählen...</option>';
+        boardMembers.forEach(m => {
+            const name = `${m.firstName || ''} ${m.lastName || m.name || ''}`.trim();
+            optionsHtml1 += `<option value="${name}" ${insp.person1 === name ? 'selected' : ''}>${name}</option>`;
+            optionsHtml2 += `<option value="${name}" ${insp.person2 === name ? 'selected' : ''}>${name}</option>`;
+        });
+
         const div = document.createElement('div');
         div.className = 'p-3 bg-white/5 rounded-xl border border-white/5 space-y-2 relative group';
         div.innerHTML = `
-        < div class= "grid grid-cols-2 gap-2" >
-        <input type="date" value="${insp.date}" onchange="updateInspection(${index}, 'date', this.value)" class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white">
-            <input type="text" placeholder="Wer?" value="${insp.person}" onchange="updateInspection(${index}, 'person', this.value)" class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <input type="date" value="${insp.date}" onchange="updateInspection(${index}, 'date', this.value)" class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+                <div></div>
+                <select onchange="updateInspection(${index}, 'person1', this.value)" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+                    ${optionsHtml1}
+                </select>
+                <select onchange="updateInspection(${index}, 'person2', this.value)" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+                    ${optionsHtml2}
+                </select>
             </div>
-            <textarea placeholder="Mängel / Notizen" onchange="updateInspection(${index}, 'defects', this.value)" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white h-12">${insp.defects}</textarea>
+            <textarea placeholder="Mängel / Notizen" onchange="updateInspection(${index}, 'defects', this.value)" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white h-12">${insp.defects || ''}</textarea>
             <button type="button" onclick="removeInspection(${index})" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <i data-lucide="minus" class="w-3 h-3"></i>
             </button>
-            `;
+        `;
         container.appendChild(div);
     });
     lucide.createIcons();
@@ -702,7 +867,7 @@ function addInspectionRow() {
     const gardenId = document.getElementById('modal-garden-id').value;
     const garden = state.gardens.find(g => g.id === gardenId);
     if (garden) {
-        garden.inspections.push({ date: new Date().toISOString().split('T')[0], person: '', defects: '' });
+        garden.inspections.push({ date: new Date().toISOString().split('T')[0], person1: '', person2: '', defects: '' });
         renderInspections(garden.inspections);
     }
 }
@@ -754,6 +919,7 @@ function saveGardenDetails(event) {
         garden.hasOutbuilding = document.getElementById('garden-hasOutbuilding').checked;
         garden.outbuildingSize = parseInt(document.getElementById('garden-outbuildingSize').value) || 0;
         garden.hasPool = document.getElementById('garden-hasPool').checked;
+        garden.hasSolar = document.getElementById('garden-hasSolar').checked;
 
         // Save Finance/Meter Data
         if (!garden.meters) garden.meters = { water: 0, electricity: 0 };
